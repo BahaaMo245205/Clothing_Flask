@@ -1,0 +1,12 @@
+email-validator
+Flask
+Flask-Admin
+Flask-Bcrypt
+Flask-Limiter
+Flask-Login
+Flask-Migrate
+Flask-Session
+Flask-SQLAlchemy
+Pillow
+pyotp
+qrcode

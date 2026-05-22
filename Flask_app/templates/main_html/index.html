@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر شياكة - الرئيسية</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .product-card { transition: transform 0.3s; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .product-card:hover { transform: translateY(-5px); }
+        .hero-section { background: #f8f9fa; padding: 60px 0; text-align: center; }
+        .btn-success { border-radius: 20px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">شياكة Store</a>
+            <div class="d-flex">
+                <a href="about.html" class="nav-link text-white me-3">من نحن</a>
+                <a href="#" class="nav-link text-white">السلة (0)</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="display-4 fw-bold">أحدث صيحات الموضة لعام 2026</h1>
+            <p class="lead text-muted">اختار لبسك المفضل بأفضل جودة وأحسن سعر في مصر.</p>
+        </div>
+    </section>
+
+    <div class="container my-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card product-card">
+                    <img src="https://via.placeholder.com/300x400" class="card-img-top" alt="قميص كاجوال">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">قميص كاجوال أزرق</h5>
+                        <p class="card-text text-success fw-bold">450 ج.م</p>
+                        <button class="btn btn-success w-100">إضافة للسلة</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card product-card">
+                    <img src="https://via.placeholder.com/300x400" class="card-img-top" alt="بنطلون جينز">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">بنطلون جينز سليم</h5>
+                        <p class="card-text text-success fw-bold">600 ج.م</p>
+                        <button class="btn btn-success w-100">إضافة للسلة</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card product-card">
+                    <img src="https://via.placeholder.com/300x400" class="card-img-top" alt="تيشيرت صيفي">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">تيشيرت قطن مميز</h5>
+                        <p class="card-text text-success fw-bold">250 ج.م</p>
+                        <button class="btn btn-success w-100">إضافة للسلة</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <p>© 2026 جميع الحقوق محفوظة لمتجر شياكة</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
