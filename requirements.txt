@@ -1,5 +1,6 @@
 email-validator
 Flask
+flask_wtf
 Flask-Admin
 Flask-Bcrypt
 Flask-Limiter

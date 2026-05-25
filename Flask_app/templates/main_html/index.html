@@ -1,25 +1,56 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>متجر شياكة - الرئيسية</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .product-card { transition: transform 0.3s; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .product-card:hover { transform: translateY(-5px); }
-        .hero-section { background: #f8f9fa; padding: 60px 0; text-align: center; }
-        .btn-success { border-radius: 20px; }
+        .product-card {
+            transition: transform 0.3s;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .hero-section {
+            background: #f8f9fa;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .btn-success {
+            border-radius: 20px;
+        }
     </style>
 </head>
-<body>
 
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand fw-bold" href="index.html">شياكة Store</a>
             <div class="d-flex">
-                <a href="about.html" class="nav-link text-white me-3">من نحن</a>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('Main_bp.about')}}" class="nav-link text-white me-3">من نحن</a>
                 <a href="#" class="nav-link text-white">السلة (0)</a>
+                <a href="{{ url_for('Auth_bp.Logout')}}" class="btn btn-outline-light me-2">تسجيل الخروج</a>
+                {% else %}
+                <a href="/Login" class="btn btn-outline-light me-2">تسجيل الدخول</a>
+                <a href="/Register" class="btn btn-light me-3">إنشاء حساب</a>
+                {% endif %}
             </div>
         </div>
     </nav>
@@ -72,4 +103,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

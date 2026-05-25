@@ -1,8 +1,7 @@
-from Flask_app import create_app
+from Flask_app import create_app, db
 
 app = create_app()
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
