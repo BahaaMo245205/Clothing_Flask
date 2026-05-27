@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
+from flask_admin import Admin
 
 
 db = SQLAlchemy()
@@ -11,6 +12,8 @@ migrate = Migrate()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 mail = Mail()
+admin = Admin()
+
 login_manager.login_view = "Auth_bp.Login"
 login_manager.login_message_category = "info"
 
@@ -25,7 +28,7 @@ def create_app():
     bcrypt.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
-
+    admin.init_app(app)
 
     from Flask_app.main.routes import Main_bp
 

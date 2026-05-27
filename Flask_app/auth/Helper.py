@@ -13,7 +13,7 @@ def sent_email(user):
         recipients=[user.Email] 
     )
     
-    link = url_for('Auth_bp.reset_token', token=token, _external=True)
+    link = url_for('Auth_bp.ResetPassword', token=token, _external=True)
     
     msg.body = f'''أهلاً {user.FirstName}،
 

@@ -49,10 +49,13 @@ def Login():
                 login_user(user)
                 flash("تم تسجيل الدخول بنجاح", "success")
                 return redirect(url_for("Main_bp.index"))
-            else:
-                if form.errors != {}:
-                    for err_msg in form.errors.values():
-                        flash(f"حاول مرة اخرى{err_msg}", "danger")
+            else :
+                flash("البريد الالكتروني او كلمة المرور غير صحيحة", "danger")
+                return redirect(url_for("Auth_bp.Login"))
+        # else:
+        #         if form.errors != {}:
+        #             for err_msg in form.errors.values():
+        #                 flash(f"حاول مرة اخرى{err_msg}", "danger")
     return render_template("auth_html/Login.html", form=form)
 
 
@@ -81,7 +84,7 @@ def ResetPassword(token):
                 return redirect(url_for("Auth_bp.ForgetPassword"))
             if user:
                 hashed_password = bcrypt.generate_password_hash(
-                    form.password.data
+                    form.NewPassword.data
                 ).decode("utf-8")
                 user.Password = hashed_password
                 db.session.commit()

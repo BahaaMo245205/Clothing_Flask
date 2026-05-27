@@ -2,7 +2,9 @@ from flask_login import UserMixin
 from Flask_app import db, login_manager
 from itsdangerous import URLSafeTimedSerializer, Serializer
 from flask import current_app
+from datetime import datetime
 
+date = datetime.now()
 
 class User(db.Model, UserMixin):
     UserID = db.Column(db.Integer, primary_key=True)
@@ -40,10 +42,14 @@ def load_user(user_id):
 class Product(db.Model):
     ProductID = db.Column(db.Integer, primary_key=True)
     ProductName = db.Column(db.String(100), nullable=False)
+    Image = db.Column(db.String(100), nullable=True)
     Description = db.Column(db.Text, nullable=True)
     Price = db.Column(db.Float, nullable=False)
     StockQuantity = db.Column(db.Integer, default=0)
-    Category = db.Column(db.String(50), nullable=True)
+    Category = db.Column(db.String(50), nullable=True) 
+    DateProduct = db.Column(db.DateTime, nullable=False,default=date.utcnow)
+
+    
 
 
 Booking = db.Table(
