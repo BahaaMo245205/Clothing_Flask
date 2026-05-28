@@ -26,7 +26,7 @@
         .btn-success {
             border-radius: 20px;
         }
-        
+
         /* تحسين مظهر التنبيهات */
         .flashes {
             list-style: none;
@@ -39,40 +39,49 @@
 <body>
     <div class="container mt-3">
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show"
+            role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
         {% endwith %}
     </div>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ url_for('Main_bp.index') if 'Main_bp' in config.blueprints else '/' }}">شياكة Store</a>
+            <a class="navbar-brand fw-bold"
+                href="{{ url_for('Main_bp.index') if 'Main_bp' in config.blueprints else '/' }}">شياكة Store</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a href="{{ url_for('Main_bp.about') }}" class="nav-link text-white">من نحن</a>
                     </li>
                 </ul>
-                
+
                 <div class="d-flex align-items-center">
                     {% if current_user.is_authenticated %}
-                        <span class="text-white me-3">أهلاً، {{ current_user.FirstName }}</span>
-                        <a href="#" class="nav-link text-white me-3">السلة (0)</a>
-                        <a href="/Profile" class="btn btn-light btn-sm me-2">الملف الشخصي</a>
-                        <a href="{{ url_for('Auth_bp.Logout') }}" class="btn btn-outline-danger btn-sm">تسجيل الخروج</a>
+                    <span class="text-white me-3">أهلاً، {{ current_user.FirstName }}</span>
+
+                    <a href="#" class="nav-link text-white me-3">السلة (0)</a>
+                    <a href="/Profile" class="btn btn-light btn-sm me-2">الملف الشخصي</a>
+
+                    {% if current_user.Type_user == 'admin' %}
+                    <a href="{{ url_for('admin.index') }}" class="btn btn-warning btn-sm me-2">لوحة التحكم (Admin)</a>
+                    {% endif %}
+
+                    <a href="{{ url_for('Auth_bp.Logout') }}" class="btn btn-outline-danger btn-sm">تسجيل الخروج</a>
+
                     {% else %}
-                        <a href="/Login" class="btn btn-outline-light btn-sm me-2">تسجيل الدخول</a>
-                        <a href="/Register" class="btn btn-light btn-sm">إنشاء حساب</a>
+                    <a href="/Login" class="btn btn-outline-light btn-sm me-2">تسجيل الدخول</a>
+                    <a href="/Register" class="btn btn-light btn-sm">إنشاء حساب</a>
                     {% endif %}
                 </div>
             </div>
@@ -82,42 +91,44 @@
     <section class="hero-section">
         <div class="container">
             <h1 class="display-4 fw-bold">أحدث صيحات الموضة لعام 2026</h1>
-            <p class="lead text-muted">اختار لبسك المفضل بأفضل جودة وأحسن سعر في مصر يا {{ current_user.FirstName if current_user.is_authenticated else 'يا بطل' }}.</p>
+            <p class="lead text-muted">اختار لبسك المفضل بأفضل جودة وأحسن سعر في مصر يا {{ current_user.FirstName if
+                current_user.is_authenticated else 'يا بطل' }}.</p>
         </div>
     </section>
 
+
     <div class="container my-5">
         <div class="row g-4">
-            <div class="col-md-4">
+            {% for product in products%}
+            <div class="col-md-4 mb-4">
                 <div class="card product-card h-100">
-                    <img src="https://via.placeholder.com/300x400" class="card-img-top" alt="قميص كاجوال">
+                    <img src="{{ url_for('static', filename='images/images_Product/' + product.Image) }}"
+                        class="card-img-top" alt="{{ product.ProductName }}">
+
                     <div class="card-body text-center">
-                        <h5 class="card-title">قميص كاجوال أزرق</h5>
-                        <p class="card-text text-success fw-bold">450 ج.م</p>
-                        <button class="btn btn-success w-100">إضافة للسلة</button>
+                        <h5 class="card-title">{{ product.ProductName }}</h5>
+                        <p class="card-text text-success fw-bold">{{ "{:,.0f}".format(product.Price) }} ج.م</p>
+
+                        <p class="card-text">
+                            {% if product.StockQuantity > 0 %}
+                            <small class="text-muted">المتاح: </small>
+                            <span class="badge {{ 'bg-danger' if product.StockQuantity <= 5 else 'bg-secondary' }}">
+                                {{ product.StockQuantity }} قطع
+                            </span>
+                            {% else %}
+                            <span class="badge bg-danger text-white">نفذت الكمية</span>
+                            {% endif %}
+                        </p>
+
+                        {% if product.StockQuantity > 0 %}
+                        <button class="btn btn-success w-100">أظهار المنتج</button>
+                        {% else %}
+                        <button class="btn btn-secondary w-100" disabled>غير متوفر حالياً</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card product-card h-100">
-                    <img src="https://via.placeholder.com/300x400" class="card-img-top" alt="بنطلون جينز">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">بنطلون جينز سليم</h5>
-                        <p class="card-text text-success fw-bold">600 ج.م</p>
-                        <button class="btn btn-success w-100">إضافة للسلة</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card product-card h-100">
-                    <img src="https://via.placeholder.com/300x400" class="card-img-top" alt="تيشيرت صيفي">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">تيشيرت قطن مميز</h5>
-                        <p class="card-text text-success fw-bold">250 ج.م</p>
-                        <button class="btn btn-success w-100">إضافة للسلة</button>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 
