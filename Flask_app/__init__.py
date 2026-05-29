@@ -35,9 +35,12 @@ def create_app():
     from Flask_app.main.routes import Main_bp
     from Flask_app.auth.routes import Auth_bp
     from Flask_app.Admin.routes import adminbp
+    from Flask_app.user.routes import user_bp
+
 
     app.register_blueprint(Main_bp)
     app.register_blueprint(Auth_bp)
     app.register_blueprint(adminbp)
+    app.register_blueprint(user_bp)
     
     return app

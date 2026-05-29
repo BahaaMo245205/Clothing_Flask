@@ -66,7 +66,7 @@
                 </div>
                 <div class="mb-3">
                     {{ form.password.label(class="form-label")}}
-                    {{ form.password(class="form-control")}}
+                    {{ form.password(class="form-control",type="password")}}
                     {% if form.errors.password %}
                     {% for error in form.errors.password %}
                     <div class="text-danger">{{ error }}</div>

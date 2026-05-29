@@ -6,13 +6,16 @@ from datetime import datetime
 
 date = datetime.now()
 
+
 class User(db.Model, UserMixin):
     UserID = db.Column(db.Integer, primary_key=True)
+    Image = db.Column(db.String(100), nullable=True, default="default.jpg")
     FirstName = db.Column(db.String(50), nullable=False)
     LastName = db.Column(db.String(50), nullable=False)
     Email = db.Column(db.String(100), unique=True, nullable=False)
     Password = db.Column(db.String(100), nullable=False)
     Type_user = db.Column(db.String(50), nullable=False, default="user")
+    information = db.relationship("InformationUser", backref="user", uselist=False)
 
     def get_id(self):
         return str(self.UserID)
@@ -39,6 +42,17 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+class InformationUser(db.Model):
+    InformationID = db.Column(db.Integer, primary_key=True)
+    UserID = db.Column(
+        db.Integer, db.ForeignKey("user.UserID"), nullable=False, unique=True
+    )
+    Phone = db.Column(db.Integer, nullable=False)
+    Governorate = db.Column(db.String(50), nullable=False)
+    City = db.Column(db.String(50), nullable=False)
+    Street = db.Column(db.String(50), nullable=False)
+
+
 class Product(db.Model):
     ProductID = db.Column(db.Integer, primary_key=True)
     ProductName = db.Column(db.String(100), nullable=False)
@@ -46,10 +60,8 @@ class Product(db.Model):
     Description = db.Column(db.Text, nullable=True)
     Price = db.Column(db.Float, nullable=False)
     StockQuantity = db.Column(db.Integer, default=0)
-    Category = db.Column(db.String(50), nullable=True) 
-    DateProduct = db.Column(db.DateTime, nullable=False,default=date.utcnow)
-
-    
+    Category = db.Column(db.String(50), nullable=True)
+    DateProduct = db.Column(db.DateTime, nullable=False, default=date.utcnow)
 
 
 Booking = db.Table(

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملف الشخصي | شياكة Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root { --main-color: #212529; --accent-color: #198754; }
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
+        
+        .profile-header { 
+            background: linear-gradient(135deg, #212529 0%, #343a40 100%); 
+            color: white; padding: 50px 0; border-radius: 0 0 40px 40px; 
+        }
+        
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .profile-img { 
+            width: 120px; height: 120px; border: 4px solid white; 
+            object-fit: cover; border-radius: 50%; background: #eee;
+        }
+
+        .card { border: none; border-radius: 20px; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        
+        .info-label { color: #888; font-size: 0.85rem; margin-bottom: 2px; }
+        .info-value { font-weight: 600; color: #2c3e50; }
+        
+        .stat-box { background: #f8f9fa; border-radius: 15px; padding: 15px; }
+        .border-dashed { border: 2px dashed #dee2e6; }
+    </style>
+</head>
+<body>
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show"
+            role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+    <div class="profile-header text-center mb-5 shadow">
+        <div class="container">
+            <div class="avatar-container mb-3">
+                {% if current_user.Image %}
+                    <img src="{{ url_for('static', filename='images/images_user/' + current_user.Image) }}" class="profile-img shadow">
+                {% else %}
+                    <div class="profile-img d-flex align-items-center justify-content-center bg-light text-dark fs-1 fw-bold mx-auto shadow">
+                        {{ current_user.FirstName[0] | upper }}
+                    </div>
+                {% endif %}
+            </div>
+            <h2 class="fw-bold mb-1">{{ current_user.FirstName }} {{ current_user.LastName }}</h2>
+            <div class="d-flex justify-content-center align-items-center gap-2">
+                <span class="badge bg-success"><i class="bi bi-patch-check"></i> {{ current_user.Type_user }}</span>
+                <span class="text-white-50">|</span>
+                <span class="text-white-50 small">عضو منذ 2026</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card p-4 h-100 shadow-sm">
+                    <h5 class="fw-bold mb-4 d-flex align-items-center">
+                        <i class="bi bi-person-badge me-2 text-success"></i> بيانات الحساب
+                    </h5>
+                    
+                    <div class="mb-3">
+                        <div class="info-label">البريد الإلكتروني</div>
+                        <div class="info-value text-break">{{ current_user.Email }}</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="info-label">اسم المستخدم</div>
+                        <div class="info-value">@{{ current_user.UserName if current_user.UserName else 'user' + current_user.id|string }}</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="/UpdateProfile" class="btn btn-dark btn-sm rounded-pill">
+                            <i class="bi bi-pencil-square me-1"></i> تعديل البيانات
+                        </a>
+                        <a href="{{ url_for('user_bp.UpdatePassword') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+                            <i class="bi bi-key me-1"></i> تغيير كلمة المرور
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card p-4 h-100 shadow-sm">
+                    <h5 class="fw-bold mb-4 d-flex align-items-center">
+                        <i class="bi bi-geo-alt me-2 text-success"></i> تفاصيل التوصيل والاتصال
+                    </h5>
+                    
+                    {% if current_user.information %}
+                        <div class="row g-4 mb-4">
+                            <div class="col-sm-6">
+                                <div class="info-label">رقم الهاتف</div>
+                                <div class="info-value"><i class="bi bi-telephone me-1 text-muted"></i> {{ current_user.information.Phone if current_user.information.Phone else 'غير مسجل' }}</div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="info-label">المنطقة / المحافظة</div>
+                                <div class="info-value"><i class="bi bi-map me-1 text-muted"></i> {{ current_user.information.Governorate }}، {{ current_user.information.City }}</div>
+                            </div>
+                            <div class="col-12">
+                                <div class="info-label">عنوان الشارع</div>
+                                <div class="info-value"><i class="bi bi-house-door me-1 text-muted"></i> {{ current_user.information.Street if current_user.information.Street else 'لم يحدد' }}</div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-light border-dashed text-center py-5 rounded-4 mb-4">
+                            <i class="bi bi-building-add fs-1 text-muted mb-3 d-block"></i>
+                            <h6 class="fw-bold">عنوانك لسه مش كامل!</h6>
+                            <p class="small text-muted">ضيف عنوانك عشان توصلك الهدوم في أسرع وقت.</p>
+                            <a href="/Information" class="btn btn-success btn-sm rounded-pill px-4">إضافة العنوان الآن</a>
+                        </div>
+                    {% endif %}
+
+                    <h5 class="fw-bold mt-2 mb-4 d-flex align-items-center">
+                        <i class="bi bi-graph-up-arrow me-2 text-success"></i> نشاطك في شياكة
+                    </h5>
+                    <div class="row g-3 text-center">
+                        <div class="col-4">
+                            <div class="stat-box">
+                                <i class="bi bi-cart-check text-success fs-4"></i>
+                                <div class="h5 fw-bold mb-0 mt-1">0</div>
+                                <small class="text-muted">طلبات</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-box">
+                                <i class="bi bi-ticket-perforated text-warning fs-4"></i>
+                                <div class="h5 fw-bold mb-0 mt-1">0</div>
+                                <small class="text-muted">كوبونات</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-box">
+                                <i class="bi bi-star text-primary fs-4"></i>
+                                <div class="h5 fw-bold mb-0 mt-1">0</div>
+                                <small class="text-muted">تقييمات</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5 mb-5">
+            <a href="/" class="btn btn-link text-dark text-decoration-none fw-bold">
+                <i class="bi bi-arrow-right"></i> العودة لتسوق أحدث الموديلات
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

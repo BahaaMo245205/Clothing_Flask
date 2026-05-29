@@ -46,7 +46,7 @@ def Login():
         if form.validate_on_submit():
             user = User.query.filter_by(Email=form.email.data.strip()).first()
             if user and bcrypt.check_password_hash(user.Password, form.password.data):
-                login_user(user)
+                login_user(user,remember=True)
                 flash("تم تسجيل الدخول بنجاح", "success")
                 return redirect(url_for("Main_bp.index"))
             else :
