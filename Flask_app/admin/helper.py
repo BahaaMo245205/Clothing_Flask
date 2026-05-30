@@ -17,3 +17,4 @@ def save_picture(form_picture):
     i.save(picture_path)
 
     return picture_name
+

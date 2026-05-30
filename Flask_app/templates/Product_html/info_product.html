@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>معلومات المنتج</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container my-4">
+    {% if product %}
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white text-center">
+            <h2>معلومات المنتج</h2>
+        </div>
+        <div class="card-body">
+            <div class="row g-4">
+                <div class="col-md-4 text-center">
+                    <img src="{{ url_for('static', filename='Images/Images_Product/' + product.Image) }}" class="img-fluid rounded" alt="{{ product.ProductName }}">
+                </div>
+                <div class="col-md-8">
+                    <h4 class="mb-3">{{ product.ProductName }}</h4>
+                    <p><strong>الوصف:</strong> {{ product.Description }}</p>
+                    <p><strong>السعر:</strong> {{ product.Price }} ريال</p>
+                    <p><strong>الكمية المتوفرة:</strong> {{ product.StockQuantity }}</p>
+                    <p><strong>التصنيف:</strong> {{ product.Category }}</p>
+                    <p><strong>تاريخ الإضافة:</strong> {{ product.DateProduct.strftime('%Y-%m-%d') }}</p>
+                </div>
+            </div>
+
+
+            <form method="POST" class="mt-4 d-flex justify-content-center align-items-center gap-2">
+                {{ form.hidden_tag() }}
+                {{ form.StockQuantity(class="form-control", style="width: 150px;",min=0, max=product.StockQuantity) }}
+                {{ form.submit(class="btn btn-success") }}
+            </form>
+            <a href="/" class="btn btn-secondary">رجوع للرئيسية</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning text-center" role="alert">
+        لا توجد معلومات لهذا المنتج.
+    </div>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

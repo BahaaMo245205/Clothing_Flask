@@ -102,7 +102,7 @@
             {% for product in products%}
             <div class="col-md-4 mb-4">
                 <div class="card product-card h-100">
-                    <img src="{{ url_for('static', filename='images/images_Product/' + product.Image) }}"
+                    <img src="{{ url_for('static', filename='Images/Images_Product/' + product.Image) }}"
                         class="card-img-top" alt="{{ product.ProductName }}">
 
                     <div class="card-body text-center">
@@ -121,7 +121,7 @@
                         </p>
 
                         {% if product.StockQuantity > 0 %}
-                        <button class="btn btn-success w-100">أظهار المنتج</button>
+                        <a href="{{ url_for('product_pb.BookingProduct', id=product.ProductID) }}" class="btn btn-outline-success w-100">أظهار المنتج</a>
                         {% else %}
                         <button class="btn btn-secondary w-100" disabled>غير متوفر حالياً</button>
                         {% endif %}
