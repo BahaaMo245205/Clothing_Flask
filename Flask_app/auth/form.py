@@ -31,8 +31,8 @@ class UserResgister(FlaskForm):
         if user:
             raise ValidationError("هذا الايميل مستخدم من قبل")
 
-    def validate_passowrd(self, passowrd):
-        if passowrd.data != self.confirm_passowrd.data:
+    def validate_password(self, password):
+        if password.data != self.confirm_password.data:
             raise ValidationError("كلمة المرور غير متطابقة")
 
 

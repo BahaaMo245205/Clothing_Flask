@@ -65,9 +65,12 @@ def ForgetPassword():
     if request.method == "POST":
         if form.validate_on_submit():
             user = User.query.filter_by(Email=form.email.data.strip()).first()
-            sent_email(user)
-            flash("تم ارسال البريد بنجاح", "success")
-            return redirect(url_for("Auth_bp.Login"))
+            if user :
+                sent_email(user)
+                flash("تم ارسال البريد بنجاح", "success")
+                return redirect(url_for("Auth_bp.Login"))
+            else:
+                flash("البريد الالكتروني غير موجود", "danger")
     return render_template("auth_html/forget_password.html", form=form)
 
 

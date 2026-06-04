@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حجز المنتجات | شياكة Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root { --main-color: #212529; --accent-color: #198754; }
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .cart-card { border: none; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .product-img { width: 80px; height: 100px; object-fit: cover; border-radius: 8px; }
+        .btn-remove { color: #dc3545; transition: 0.2s; text-decoration: none; }
+        .btn-remove:hover { color: #a71d2a; transform: scale(1.1); }
+        .summary-box { background: white; border-radius: 15px; padding: 25px; position: sticky; top: 20px; }
+        .reservation-notice { font-size: 0.85rem; background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 10px; border-right: 4px solid #ffeeba; }
+        .empty-cart { padding: 50px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="d-flex align-items-center mb-4">
+        <h2 class="fw-bold mb-0"><i class="bi bi-calendar-check me-2 text-success"></i> قائمة الحجز</h2>
+        <span class="badge bg-dark ms-3">{{ products|length }} منتج</span>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card cart-card p-4">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="text-muted">
+                            <tr>
+                                <th>المنتج</th>
+                                <th>السعر التقديري</th>
+                                <th>الكمية</th>
+                                <th>الإجمالي</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if products %}
+                                {% for item in products %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ url_for('static', filename='Images/Images_Product/' + item.info.Image) }}" class="product-img me-3" alt="{{ item.info.ProductName }}">
+                                            <div>
+                                                <h6 class="fw-bold mb-0">{{ item.info.ProductName }}</h6>
+                                                <small class="text-muted">{{ item.info.Category }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ item.info.Price }} ج.م</td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border p-2">{{ item.quantity }} قطعة</span>
+                                    </td>
+                                    <td class="fw-bold text-success">{{ item.total }} ج.م</td>
+                                    <td>
+                                        <a href="{{ url_for('product_pb.DeleteFromBasket' , id=item.info.ProductID) }}" class="btn-remove px-2">
+                                            <i class="bi bi-trash3 fs-5"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="empty-cart">
+                                        <i class="bi bi-cart-x fs-1 text-muted d-block mb-3"></i>
+                                        <h5>لا توجد منتجات في قائمة الحجز حالياً</h5>
+                                        <a href="/" class="btn btn-outline-success mt-3">تصفح المنتجات</a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-3">
+                    <a href="/" class="text-decoration-none text-dark fw-bold">
+                        <i class="bi bi-arrow-right"></i> إضافة منتجات أخرى للحجز
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="summary-box shadow-sm text-end">
+                <h5 class="fw-bold mb-4 border-bottom pb-2 text-start">ملخص الحجز</h5>
+                
+                <div class="reservation-notice mb-4 text-start">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                    تنبيه: يتم حجز المنتجات لمدة <strong>24 ساعة</strong> فقط من تاريخ تأكيد الحجز.
+                </div>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">إجمالي قيمة المنتجات</span>
+                    <span class="fw-bold">{{ total }} ج.م</span>
+                </div>
+                
+                <hr>
+                
+                <div class="d-flex justify-content-between mb-4">
+                    <span class="h5 fw-bold">الإجمالي المتوقع</span>
+                    <span class="h5 fw-bold text-success">{{ total }} ج.م</span>
+                </div>
+                
+                <div class="mb-4 text-start">
+                    <p class="small text-muted"><i class="bi bi-info-circle me-1"></i> سيتم التواصل معك عبر الهاتف لتأكيد موعد الاستلام من الفرع أو التوصيل.</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('product_pb.Booking_') }}">
+                    <button type="submit" class="btn btn-success w-100 py-3 fw-bold rounded-pill shadow mb-3" {% if not products %}disabled{% endif %}>
+                        تأكيد حجز المنتجات <i class="bi bi-bookmark-check-fill ms-2"></i>
+                    </button>
+                </form>
+                
+                <a href="/Profile" class="btn btn-outline-dark w-100 py-2 rounded-pill small">
+                    عرض حجوزاتي السابقة
+                </a>
+                
+                <div class="text-center mt-4">
+                    <p class="text-muted" style="font-size: 0.75rem;">
+                        <i class="bi bi-shield-lock"></i> حجز آمن بضمان متجر شياكة
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

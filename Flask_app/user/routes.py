@@ -18,13 +18,15 @@ def Profile():
 def UpdateProfile():
     form = UpdateInformationUser()
     
-    
-    form.FirstName.data = current_user.FirstName
-    form.LastName.data = current_user.LastName
-    form.Phone.data = str(current_user.information.Phone)
-    form.Governorate.data = current_user.information.Governorate
-    form.City.data = current_user.information.City
-    form.Street.data = current_user.information.Street
+    if request.method == 'GET':
+        form.FirstName.data = current_user.FirstName
+        form.LastName.data = current_user.LastName
+        if current_user.information:
+            form.Phone.data = str(current_user.information.Phone)
+            form.Governorate.data = current_user.information.Governorate
+            form.City.data = current_user.information.City
+            form.Street.data = current_user.information.Street
+
     if request.method == 'POST':
         if form.validate_on_submit():
             if form.Image.data:
@@ -32,6 +34,9 @@ def UpdateProfile():
                 current_user.Image = picture_file
             current_user.FirstName = form.FirstName.data
             current_user.LastName = form.LastName.data
+            if not current_user.information:
+                current_user.information = InformationUser(UserID=current_user.UserID)
+                db.session.add(current_user.information)
             current_user.information.Phone = int(form.Phone.data)
             current_user.information.Governorate = form.Governorate.data
             current_user.information.City = form.City.data
@@ -75,4 +80,3 @@ def Information():
             return redirect(url_for('user_bp.Information'))
         
     return render_template('/User_html/Information.html',form=form)
-

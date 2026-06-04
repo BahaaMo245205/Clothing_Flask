@@ -4,8 +4,6 @@ from itsdangerous import URLSafeTimedSerializer, Serializer
 from flask import current_app
 from datetime import datetime
 
-date = datetime.now()
-
 
 class User(db.Model, UserMixin):
     UserID = db.Column(db.Integer, primary_key=True)
@@ -61,16 +59,15 @@ class Product(db.Model):
     Price = db.Column(db.Float, nullable=False)
     StockQuantity = db.Column(db.Integer, default=0)
     Category = db.Column(db.String(50), nullable=True)
-    DateProduct = db.Column(db.DateTime, nullable=False, default=date.utcnow)
+    DateProduct = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 
-Booking = db.Table(
-    "Booking",
-    db.Column("BookingID", db.Integer, primary_key=True),
-    db.Column("UserID", db.Integer, db.ForeignKey("user.UserID"), primary_key=True),
-    db.Column(
-        "ProductID", db.Integer, db.ForeignKey("product.ProductID"), primary_key=True
-    ),
-    db.Column("BookingDate", db.DateTime, nullable=False),
-    db.Column("Quantity", db.Integer, nullable=False),
-)
+class Booking(db.Model):
+    __tablename__ = "Booking"
+    BookingID = db.Column(db.Integer, primary_key=True)
+    UserID = db.Column(db.Integer, db.ForeignKey("user.UserID"), nullable=False)
+    ProductID = db.Column(
+        db.Integer, db.ForeignKey("product.ProductID"), nullable=False
+    )
+    BookingDate = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    Quantity = db.Column(db.Integer, nullable=False)

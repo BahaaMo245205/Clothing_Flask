@@ -1,1 +1,8 @@
+flask_session/
+__pycache__/
+instance/
+venv/
 .env
+.env
+*.db
+create.py
