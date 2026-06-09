@@ -1,12 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, abort
+from flask import Blueprint, request, redirect, url_for, flash, abort
+from Flask_app.Admin.forms import ProductForm, Analyices_projectForm
 from flask_login import current_user, login_required
-from flask_admin.contrib.sqla import ModelView
-from flask_admin import AdminIndexView, expose, BaseView
-from Flask_app import admin, db, bcrypt
-from Flask_app.Model import User, Product
-from Flask_app.Admin.forms import ProductForm
-from flask_admin.contrib.fileadmin import FileAdmin
 from Flask_app.Admin.helper import save_picture
+from flask_admin.contrib.sqla import ModelView
+from flask_admin import AdminIndexView, expose
+from Flask_app.Model import Product, Booking, InformationUser, User, InformationBooking
+from Flask_app import db
 import os
 
 
@@ -19,17 +18,46 @@ class MyModelView(ModelView):
 
 
 class MyAdminIndexView(AdminIndexView):
-    @expose("/")
+    @expose("/", methods=["POST", "GET"])
+    @login_required
     def index(self):
         if current_user.is_authenticated:
             if current_user.Type_user == "admin":
-                return self.render("admin_html/analytics_index.html", title="Admin")
+                form = Analyices_projectForm()
+                DataBooking = Booking.query.all()
+                WaitBooking = Booking.query.filter_by(deliver_booking="No").all()
+                DoneBooking = Booking.query.filter_by(deliver_booking="Yes").all()
+                informationbooking = InformationUser.query.all()
+                return self.render(
+                    "admin_html/analytics_index.html",
+                    title="Admin",
+                    form=form,
+                    bookings=DataBooking,
+                    num_TotalBooking=len(DataBooking),
+                    num_deliver=len(WaitBooking),
+                    num_DoneBooking=len(DoneBooking),
+                    num_InformationUser=len(informationbooking),
+                )
             else:
                 return redirect(url_for("Main_bp.Home"))
         else:
             return redirect(url_for("Auth_bp.Login"))
 
+    @expose("/booking_details/<int:id>", methods=["POST", "GET"])
+    @login_required
+    def booking_details(self, id):
+        GetProducts = InformationBooking.query.filter_by(BookingID=id).all()
+        if request.method == "POST":
+            ChickOrder = Booking.query.get_or_404(id)
+            ChickOrder.deliver_booking = "Yes"
+            flash("تم تسليم بي نجاح", "success")
+            db.session.commit()
+            return redirect(url_for("admin.index"))
+
+        return self.render("/admin_html/booking_details.html", products=GetProducts)
+
     @expose("/add_product", methods=["POST", "GET"])
+    @login_required
     def add_product(self):
         form = ProductForm()
         if request.method == "POST":
@@ -57,31 +85,41 @@ class MyAdminIndexView(AdminIndexView):
         return self.render(
             "admin_html/AddProduct.html", form=form, products=Product.query.all()
         )
-
-
+    ########################################################
     @expose("/DeleteProduct/<int:id>", methods=["GET", "POST"])
+    @login_required
     def delete_product(self, id):
         if current_user.Type_user != "admin":
             abort(403)
 
         deleteProduct = Product.query.get_or_404(id)
+        booking = Booking.query.filter_by(BookingID=id)
+        Details = booking.details
+        for detail in Details:
+            if detail.BookingID == id:
+                if booking.deliver_booking == "No":
+                    continue
+                db.session.delete(detail)
+
         image_filename = deleteProduct.Image
-        image_path = os.path.join("Flask_app","static", "Images", "Images_Product", image_filename)
-        if os.path.exists(image_path):
-            os.remove(image_path)
-        else :
-            print("not found the file")
+        image_path = os.path.join(
+            "Flask_app", "static", "Images", "Images_Product", image_filename
+        )
         db.session.delete(deleteProduct)
         db.session.commit()
+        if os.path.exists(image_path):
+            os.remove(image_path)
+        else:
+            return "<script>alert('Note Found The Images')</script>"
         flash("تم الحذف بنجاح", "success")
         return redirect(url_for("admin.add_product"))
 
-
     @expose("/UpdateProduct/<int:id>", methods=["GET", "POST"])
+    @login_required
     def update_product(self, id):
         if current_user.Type_user != "admin":
             abort(403)
-        
+
         product = Product.query.get_or_404(id)
         form = ProductForm()
 
@@ -93,13 +131,15 @@ class MyAdminIndexView(AdminIndexView):
             product.Category = form.Category.data
 
             if form.Image.data:
-                image_path = os.path.join("Flask_app", "static", "Images", "Images_Product", product.Image)
+                image_path = os.path.join(
+                    "Flask_app", "static", "Images", "Images_Product", product.Image
+                )
                 if os.path.exists(image_path):
                     os.remove(image_path)
                 product.Image = save_picture(form.Image.data)
 
             db.session.commit()
-            flash("تم التحديث بنجاح", 'success')
+            flash("تم التحديث بنجاح", "success")
             return redirect(url_for("admin.add_product"))
 
         if request.method == "GET":
@@ -108,8 +148,14 @@ class MyAdminIndexView(AdminIndexView):
             form.price.data = product.Price
             form.StockQuantity.data = product.StockQuantity
             form.Category.data = product.Category
+            form.Image.data = product.Image
 
-        return self.render("admin_html/AddProduct.html", form=form, products=Product.query.all(), is_update=True)
+        return self.render(
+            "admin_html/AddProduct.html",
+            form=form,
+            products=Product.query.all(),
+            is_update=True,
+        )
 
 
 class UserView(MyModelView):

@@ -65,6 +65,7 @@
                     {{ form.hidden_tag() }}
                     
                     <div class="col-auto">
+                        <label class="form-label small fw-bold">الكمية الآن: {{  product.StockQuantity }}</label><br>
                         <label class="form-label small fw-bold">الكمية المطلوبة:</label>
                         <div class="input-group" style="width: 130px;">
                             {{ form.StockQuantity(class="form-control text-center rounded-start", type="number", min=1, max=product.StockQuantity, value=1) }}
@@ -75,7 +76,7 @@
                     <div class="col-12 mt-4">
                         <div class="d-flex gap-2">
                             {{ form.submit(class="btn btn-reserve text-white flex-grow-1", value="تأكيد الحجز الآن") }}
-                            <a href="/" class="btn btn-outline-secondary rounded-pill px-4">
+                            <a href="{{ url_for('Main_bp.index') }}" class="btn btn-outline-secondary rounded-pill px-4">
                                 <i class="bi bi-house"></i>
                             </a>
                         </div>

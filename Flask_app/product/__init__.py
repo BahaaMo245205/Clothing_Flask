@@ -8,7 +8,7 @@ from flask import (
     abort,
     session,
 )
-from Flask_app.Model import Product, Booking, User, InformationUser
+from Flask_app.Model import Product, Booking, InformationUser, InformationBooking
 from wtforms.validators import DataRequired, ValidationError
 from flask_login import current_user, login_required
 from Flask_app.Admin.helper import save_picture
@@ -74,20 +74,35 @@ def Booking_():
             flash(f"عذراً، الكمية المطلوبة للمنتج '{name}' غير متوفرة حالياً", "danger")
             return redirect(url_for("product_pb.show_basket"))
 
-    for id_p, quantity in basket.items():
-        product = Product.query.get(int(id_p))
-        product.StockQuantity -= quantity
-        new_booking = Booking(
-            UserID=current_user.UserID,
-            ProductID=product.ProductID,
-            Quantity=quantity,
-        )
-        db.session.add(new_booking)
+    booking = Booking(UserID=current_user.UserID)
+    db.session.add(booking)
+    db.session.flush()
 
-    db.session.commit()
-    session.pop("Basket", None)
-    flash("تم الحجز بنجاح", "success")
-    return redirect(url_for("Main_bp.index"))
+    try:
+        for p_id, quantity in basket.items():
+            booking_detail = InformationBooking(
+                BookingID=booking.BookingID,
+                ProductID=int(p_id),
+                Quantity=int(quantity),
+                Price=float(Product.query.get(int(p_id)).Price),
+                UserID=current_user.UserID,
+            )
+            db.session.add(booking_detail)
+
+            product = Product.query.get(quantity)
+            if product:
+                product.StockQuantity -= quantity
+
+        db.session.commit()
+        session.pop("Basket", None)
+        flash("تم الحجز بنجاح", "success")
+        return redirect(url_for("Main_bp.index"))
+
+    except Exception as e:
+        db.session.rollback()
+        flash("حدث خطأ أثناء تسجيل الحجز، حاول مرة أخرى.", "danger")
+        return redirect(url_for("main.cart"))
+
 
 @product_pb.route("/DeleteFromBasket/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -102,7 +117,6 @@ def DeleteFromBasket(id):
         session.modified = True
 
     return redirect(url_for("product_pb.show_basket"))
-        
 
 
 @product_pb.route("/BookingProduct/<int:id>", methods=["GET", "POST"])

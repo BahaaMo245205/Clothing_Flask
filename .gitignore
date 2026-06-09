@@ -6,3 +6,5 @@ venv/
 .env
 *.db
 create.py
+Note.md
+scema.dio

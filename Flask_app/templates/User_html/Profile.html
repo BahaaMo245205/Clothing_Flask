@@ -131,28 +131,29 @@
                     <h5 class="fw-bold mt-2 mb-4 d-flex align-items-center">
                         <i class="bi bi-graph-up-arrow me-2 text-success"></i> نشاطك في شياكة
                     </h5>
-                    <div class="row g-3 text-center">
+                    <div class="row g-3 mb-3 align-items-center">
+                        <div class="col text-center">
                         <div class="col-4">
                             <div class="stat-box">
                                 <i class="bi bi-cart-check text-success fs-4"></i>
-                                <div class="h5 fw-bold mb-0 mt-1">0</div>
+                                <div class="h5 fw-bold mb-0 mt-1">{{ current_user.bookings | length if current_user.bookings else '0'}}</div>
                                 <small class="text-muted">طلبات</small>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <!-- <div class="col-4">
                             <div class="stat-box">
                                 <i class="bi bi-ticket-perforated text-warning fs-4"></i>
-                                <div class="h5 fw-bold mb-0 mt-1">0</div>
+                                <div class="h5 fw-bold mb-0 mt-1">{{ current_user.coupons | length if current_user.coupons else '0'}}</div>
                                 <small class="text-muted">كوبونات</small>
                             </div>
-                        </div>
-                        <div class="col-4">
+                        </div> -->
+                        <!-- <div class="col-4">
                             <div class="stat-box">
                                 <i class="bi bi-star text-primary fs-4"></i>
-                                <div class="h5 fw-bold mb-0 mt-1">0</div>
+                                <div class="h5 fw-bold mb-0 mt-1">0.0</div>
                                 <small class="text-muted">تقييمات</small>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
