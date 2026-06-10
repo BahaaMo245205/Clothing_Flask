@@ -1,0 +1,4 @@
+venv
+fask_session
+__pycache__
+migrations
