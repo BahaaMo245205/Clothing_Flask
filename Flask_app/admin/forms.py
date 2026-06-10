@@ -1,5 +1,6 @@
-from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
+from wtforms.validators import DataRequired
+from flask_wtf import FlaskForm
 from wtforms import (
     StringField,
     SubmitField,
@@ -8,7 +9,6 @@ from wtforms import (
     IntegerField,
     SearchField,
 )
-from wtforms.validators import DataRequired
 
 
 class ProductForm(FlaskForm):

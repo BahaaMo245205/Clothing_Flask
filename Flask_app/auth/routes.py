@@ -1,14 +1,14 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask_login import login_user, logout_user, login_required, current_user
+from Flask_app.auth.Helper import sent_email
 from Flask_app.auth.form import (
     LoginForm,
     UserResgister,
     ForgetPasswordForm,
     ResetPasswordForm,
 )
-from Flask_app.auth.Helper import sent_email
 from Flask_app import db, bcrypt
 from Flask_app.Model import User
-from flask_login import login_user, logout_user, login_required, current_user
 
 Auth_bp = Blueprint("Auth_bp", __name__)
 
@@ -22,8 +22,8 @@ def Register():
                 "utf-8"
             )
             user = User(
-                FirstName=form.FirstName.data.strip(),
-                LastName=form.LastName.data.strip(),
+                FirstName=form.FirstName.data.strip().title(),
+                LastName=form.LastName.data.strip().title(),
                 Email=form.email.data.strip(),
                 Password=hashed_password.strip(),
             )
@@ -46,16 +46,16 @@ def Login():
         if form.validate_on_submit():
             user = User.query.filter_by(Email=form.email.data.strip()).first()
             if user and bcrypt.check_password_hash(user.Password, form.password.data):
-                login_user(user,remember=True)
+                login_user(user, remember=True)
                 flash("تم تسجيل الدخول بنجاح", "success")
                 return redirect(url_for("Main_bp.index"))
-            else :
+            else:
                 flash("البريد الالكتروني او كلمة المرور غير صحيحة", "danger")
                 return redirect(url_for("Auth_bp.Login"))
-        # else:
-        #         if form.errors != {}:
-        #             for err_msg in form.errors.values():
-        #                 flash(f"حاول مرة اخرى{err_msg}", "danger")
+        else:
+            if form.errors != {}:
+                for err_msg in form.errors.values():
+                    flash(f"حاول مرة اخرى{err_msg}", "danger")
     return render_template("auth_html/Login.html", form=form)
 
 
@@ -65,7 +65,7 @@ def ForgetPassword():
     if request.method == "POST":
         if form.validate_on_submit():
             user = User.query.filter_by(Email=form.email.data.strip()).first()
-            if user :
+            if user:
                 sent_email(user)
                 flash("تم ارسال البريد بنجاح", "success")
                 return redirect(url_for("Auth_bp.Login"))
@@ -79,6 +79,7 @@ def ResetPassword(token):
     form = ResetPasswordForm()
     if current_user.is_authenticated:
         return redirect(url_for("Main_bp.index"))
+
     if request.method == "POST":
         if form.validate_on_submit():
             user = User.verify_reset_token(token)

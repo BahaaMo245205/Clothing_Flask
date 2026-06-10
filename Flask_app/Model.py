@@ -81,7 +81,7 @@ class Booking(db.Model):
     deliver_booking = db.Column(
         db.String(10), nullable=True, default="No"
     )  # "No" أو "Yes"
-    
+
     details = db.relationship(
         "InformationBooking",
         backref="main_booking",

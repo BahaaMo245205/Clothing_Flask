@@ -8,6 +8,7 @@ Flask-Login
 Flask-Migrate
 Flask-Session
 Flask-SQLAlchemy
+secrets
 Pillow
 pyotp
 qrcode

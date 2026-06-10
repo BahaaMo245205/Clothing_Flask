@@ -1,9 +1,9 @@
-from flask import *
 from flask_login import current_user
+from Flask_app.user.helper import *
+from Flask_app.user.forms import *
 from Flask_app import bcrypt, db
 from Flask_app.Model import *
-from Flask_app.user.forms import *
-from Flask_app.user.helper import *
+from flask import *
 
 user_bp = Blueprint("user_bp", __name__)
 
@@ -31,8 +31,8 @@ def UpdateProfile():
             if form.Image.data:
                 picture_file = save_picture(form.Image.data)
                 current_user.Image = picture_file
-            current_user.FirstName = form.FirstName.data
-            current_user.LastName = form.LastName.data
+            current_user.FirstName = form.FirstName.data.title()
+            current_user.LastName = form.LastName.data.title()
             if not current_user.information:
                 current_user.information = InformationUser(UserID=current_user.UserID)
                 db.session.add(current_user.information)
