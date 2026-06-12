@@ -4,7 +4,7 @@ from Flask_app.user.forms import *
 from Flask_app import bcrypt, db
 from Flask_app.Model import *
 from flask import *
-
+import os 
 user_bp = Blueprint("user_bp", __name__)
 
 
@@ -29,8 +29,13 @@ def UpdateProfile():
     if request.method == "POST":
         if form.validate_on_submit():
             if form.Image.data:
-                picture_file = save_picture(form.Image.data)
-                current_user.Image = picture_file
+                file_data = form.Image.data
+                file_data.seek(0, os.SEEK_END)
+                file_size = file_data.tell()
+                file_data.seek(0)
+                if os.path.splitext(form.Image.data.filename)[1].lower() in ['.jpg', '.png', '.jpeg'] and file_size <= 16 * 1024 * 1024:
+                    picture_file = save_picture(form.Image.data)
+                    current_user.Image = picture_file
             current_user.FirstName = form.FirstName.data.title()
             current_user.LastName = form.LastName.data.title()
             if not current_user.information:

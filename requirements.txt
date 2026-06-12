@@ -1,5 +1,6 @@
 email-validator
 Flask
+flask_mail
 flask_wtf
 Flask-Admin
 Flask-Bcrypt
@@ -8,7 +9,8 @@ Flask-Login
 Flask-Migrate
 Flask-Session
 Flask-SQLAlchemy
-secrets
+itsdangerous
 Pillow
 pyotp
 qrcode
+python-dotenv

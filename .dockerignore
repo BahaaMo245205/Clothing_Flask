@@ -1,4 +1,6 @@
-venv
-fask_session
-__pycache__
-migrations
+venv/
+fask_session/
+__pycache__/
+migrations/
+scema.dio
+README.md

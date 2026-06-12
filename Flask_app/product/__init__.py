@@ -11,7 +11,6 @@ from flask import (
 from Flask_app.Model import Product, Booking, InformationUser, InformationBooking
 from wtforms.validators import DataRequired, ValidationError
 from flask_login import current_user, login_required
-from Flask_app.Admin.helper import save_picture
 from flask_wtf import FlaskForm
 from Flask_app import db
 from wtforms import (
@@ -66,7 +65,7 @@ def Booking_():
     if not isinstance(basket, dict) or not basket:
         flash("سلة التسوق فارغة", "info")
         return redirect(url_for("Main_bp.index"))
-
+    
     for id_p, quantity in basket.items():
         product = Product.query.get(int(id_p))
         if not product or quantity > product.StockQuantity:
@@ -137,9 +136,7 @@ def AddInBasket(id):
 
             stock_quantity = form.StockQuantity.data
             if stock_quantity <= product.StockQuantity:
-
                 basket = session.get("Basket")
-
                 if not isinstance(basket, dict):
                     basket = {}
 

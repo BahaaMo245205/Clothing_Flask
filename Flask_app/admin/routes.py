@@ -84,7 +84,11 @@ class MyAdminIndexView(AdminIndexView):
                 StockQuantity = form.StockQuantity.data
                 Category = form.Category.data
                 Image = form.Image.data
-                if Image:
+                file_date = Image.seek(0, os.SEEK_END)
+                file_size = file_date.tell()
+                Image.seek(0)
+                file_extension = os.path.splitext(Image.filename)[1].lower()
+                if file_extension in [".jpg", ".png", ".jpeg"] and file_size <= 16 * 1024 * 1024:
                     product = Product(
                         ProductName=Name,
                         Description=Description,
