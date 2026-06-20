@@ -64,35 +64,45 @@
                     {{ form.FirstName.label(class="form-label")}}
                     {{ form.FirstName(class="form-control")}}
                     {% if form.errors.FirstName %}
-                    <div class="text-danger">{{ form.errors.FirstName }}</div>
+                    {% for error in form.errors.FirstName %}
+                    <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
                     {% endif %}
                 </div>
                 <div class="mb-3">
                     {{ form.LastName.label(class="form-label")}}
                     {{ form.LastName(class="form-control")}}
                     {% if form.errors.LastName %}
-                    <div class="text-danger">{{ form.errors.LastName }}</div>
+                    {% for error in form.errors.LastName %}
+                    <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
                     {% endif %}
                 </div>
                 <div class="mb-3">
                     {{ form.email.label(class="form-label")}}
                     {{ form.email(class="form-control")}}
                     {% if form.errors.email %}
-                    <div class="text-danger">{{ form.errors.email }}</div>
+                    {% for error in form.errors.email %}
+                    <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
                     {% endif %}
                 </div>
                 <div class="mb-3">
                     {{ form.password.label(class="form-label")}}
                     {{ form.password(class="form-control",type="password",id='password')}}
                     {% if form.errors.password %}
-                    <div class="text-danger">{{ form.errors.password }}</div>
+                    {% for error in form.errors.password %}
+                    <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
                     {% endif %}
                 </div>
                 <div class="mb-3">
                     {{ form.confirm_password.label(class="form-label")}}
                     {{ form.confirm_password(class="form-control",type="password",id='confirm_password')}}
                     {% if form.errors.confirm_password %}
-                    <div class="text-danger">{{ form.errors.confirm_password }}</div>
+                    {% for error in form.errors.confirm_password %}
+                    <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
                     {% endif %}
                 </div>
                 <div class="mb-3 form-check">

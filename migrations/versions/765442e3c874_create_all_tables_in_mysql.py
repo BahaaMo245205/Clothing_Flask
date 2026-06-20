@@ -1,8 +1,8 @@
-"""Fixed something in the table Booking
+"""create all tables in mysql
 
-Revision ID: 445f9a5c7e36
+Revision ID: 765442e3c874
 Revises: 
-Create Date: 2026-06-06 14:29:31.110721
+Create Date: 2026-06-14 03:22:15.475467
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '445f9a5c7e36'
+revision = '765442e3c874'
 down_revision = None
 branch_labels = None
 depends_on = None
